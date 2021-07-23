@@ -1,5 +1,6 @@
 const telegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
+//создайте API.js в папке проекта
 const API = require('./API.js');
 const fs = require('fs');
 const telegramAPI = API.telegramAPI;
