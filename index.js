@@ -11,7 +11,7 @@ const bot = new telegramBot(telegramAPI, {polling: true});
 bot.on('voice', (msg) => {
 
     const chatId = msg.chat.id;
-    //преобразовыввает файл в поток
+    //преобразовыввает запись в поток
     const stream = bot.getFileStream(msg.voice.file_id);
     let chunks = [];
     stream.on('data', chunk => chunks.push(chunk));
@@ -29,18 +29,29 @@ bot.on('voice', (msg) => {
         axios(axiosConfig).then(response => {
 
             const command = response.data.result;
-            bot.sendMessage(chatId, `Вы сказали: ${command}`);
-            //Команды для бота
-            if (command === 'Время') {
+            bot.sendMessage(chatId, `Вы сказали: ${command}`).then(() => {
+                //Команды для бота
+                switch (command) {
 
-                let timeNow = writeTime();
-                bot.sendMessage(chatId, `Время: ${timeNow}`);
+                    case 'Время':
+                        let timeNow = writeTime();
+                        bot.sendMessage(chatId, `Время: ${timeNow}`);
+                        break;
+                        
+                    case 'Привет':
+                        bot.sendMessage(chatId, `Здравствуй, ${msg.chat.username}`);
+                        break;
 
-            }
-            
-            if (command === 'Привет') {
-                bot.sendMessage(chatId, `Здравствуй, ${msg.chat.username}`);
-            }
+                    case 'Рандом':
+                        bot.sendMessage(chatId, `Выпало число: ${Math.floor(Math.random() * 100)}`);
+                        break;
+
+                    default:
+                        bot.sendMessage(chatId, 'Ошибка распознования.');
+                        break;
+
+                }
+            });
 
         }).catch(err => {
             console.log('Ошибка распознавания: ', err);
